@@ -1,0 +1,27 @@
+.game_container{
+    border: 1px solid black;
+    background: purple;
+    height: 650px;
+    width: 430px;
+    border-bottom-right-radius: 20px;
+    margin: auto;
+    margin-top: 10px;
+}
+
+#canvas{
+    border: 1px solid black;
+    display: block;
+    margin: auto;
+    margin-top: 10px;
+    background: rgba(166, 255, 0, .9);
+}
+
+#start{
+    width: 60px;
+    height: 60px;
+    padding: 10px;
+    background: black;
+    border-radius: 50%;
+    color: white;
+    border: none;
+}
