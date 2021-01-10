@@ -16,6 +16,15 @@
     background: rgba(166, 255, 0, .9);
 }
 
+.act_container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 50%;
+    margin: auto;
+    margin-top: 10px;
+}
+
 #start{
     width: 60px;
     height: 60px;
@@ -24,4 +33,16 @@
     border-radius: 50%;
     color: white;
     border: none;
+}
+
+.light{
+    width: 20px;
+    height: 20px;
+    border: black solid 3px;
+    background: gray;
+    border-radius: 50%;
+}
+
+.light_red{
+    background: red;
 }
