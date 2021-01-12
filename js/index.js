@@ -2,34 +2,53 @@ import BeforeValues from './beforeValues.js'
 
 class Game{
     constructor(btn){
+        //SCORE
         this.score = 0
         this.run = {
             start: null,
             walk: null
         }
+
+        //RUN Velocity
         this.runVelocity = 5
+
+        //CANVAS & CONTEXT
         this.canvas = document.getElementById("canvas")
         this.ctx = this.canvas.getContext("2d")
+
+        //POS X & POS Y
         this.x = 10;
         this.y = 10;
+
+        //VEL X % VEL Y
         this.velX = 10;
         this.velY = 0;
+
+        //RANDOM POINT FOR THE POINT SCORE
         this.randomPoint = {
             x: null,
             y: null
         }
+
+        //HISTORY OF THE VALUES X & Y
         this.history = []
+
+        //TAIL
         this.tail = []
+
+        //LIGHT
         this.light = document.getElementById("light")
         this.btn = btn
     }
 
+    //RESET PROPERTIES
     reset = () => {
         this.score = 0
         this.run = {
             start: null,
             walk: null
         }
+        this.runVelocity = 5
         this.x = 10;
         this.y = 10;
         this.velX = 10;
@@ -42,20 +61,34 @@ class Game{
         this.tail = []
     }
 
+    //PUT THE GAME MORE HARD WHIT "RUN VELOCITY"
+    pushDificult = () => {
+        clearInterval(this.run.walk)
+        this.runVelocity += 1
+        this.run.walk = setInterval(() => {
+            this.light.classList.toggle("light_red")
+            this.history = BeforeValues.getValues()
+            BeforeValues.pushValues(this.x,this.y)
+            this.x += this.velX
+            this.y += this.velY
+        },1000/this.runVelocity)
+    }
+
+    //SCORE FUNCTION
     scoreFunction = (ctx) => {
         if(this.randomPoint.x == this.x && this.randomPoint.y == this.y){
             this.score += 1
-            console.log(this.score)
+            if(this.score % 2 == 0){
+                this.pushDificult()
+                console.log(this.runVelocity)
+            }
         }
 
         ctx.font= "30px Helvetica"
         ctx.fillText(this.score, 360,30)
     }
 
-    testCanvas = (f) => {
-        f(this.canvas)
-    }
-
+    //CHECK TO THE SNAKE DONT MOVE FROM RIGHT TO LEFT OR VICEVERSA
     checkLegalMovement = (x,y) => {
         switch (x) {
             case 10:
@@ -88,6 +121,7 @@ class Game{
         return true
     }
 
+    //MOVE THE SNAKE
     snakeRunAndEvent = (x,y) => {
         if(!this.checkLegalMovement(x,y)){
             return false
@@ -97,6 +131,7 @@ class Game{
         this.velY = y
     }
 
+    //TAIL FUNTION TO ENLARGE IT
     tailFunction = (ctx) => {
         if(this.randomPoint.x == this.x && this.randomPoint.y == this.y){
             this.tail.push(this.tail.length + 1)
@@ -110,6 +145,7 @@ class Game{
         })
     }
 
+    //CHANGE THE POINT TO OTHER POINT
     changePoint = () => {
         let posX = '';
         let posY = '';
@@ -135,6 +171,7 @@ class Game{
         this.randomPoint.y = Number(posY)
     }
 
+    //WRITE THE POINT
     randomPointFunction = (ctx) => {
         if(!this.randomPoint.x || !this.randomPoint.y){
             this.changePoint()
@@ -148,6 +185,7 @@ class Game{
         
     }
 
+    //GAME OVER FUNCTION
     gameOver = (ctx,canvas,score) => {
         clearInterval(this.run.start)    
         clearInterval(this.run.walk)
@@ -172,6 +210,7 @@ class Game{
         this.btn.removeAttribute("disabled")
     }
 
+    //CHECK SNAKE COLLAPSE
     checkColapse = () => {
         switch (this.x) {
             case 400:
@@ -194,17 +233,21 @@ class Game{
         }
 
         this.tail.forEach((v,i) => {
-            if(this.history[i].x == this.x && this.history[i].y == this.y){
-                this.gameOver(this.ctx,this.canvas,this.score)
+            if(this.history[i].x && this.history[i].y){
+                if(this.history[i].x == this.x && this.history[i].y == this.y){
+                    this.gameOver(this.ctx,this.canvas,this.score)
+                }
             }
         })
     }
 
+    //WRITE THE SNAKE
     snake = (x,y) => {
         this.ctx.fillStyle = "purple"
         this.ctx.fillRect(x,y,10,10)
     }
 
+    //ANIMATE THE GAME
     animation = () => {
        this.run.start = setInterval(() => {
             this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height)
@@ -217,13 +260,16 @@ class Game{
 
         this.run.walk = setInterval(() => {
             this.light.classList.toggle("light_red")
+            //GET LAST VALUES
             this.history = BeforeValues.getValues()
+            //PUSH CURRENTLY VALUES
             BeforeValues.pushValues(this.x,this.y)
             this.x += this.velX
             this.y += this.velY
         },1000/this.runVelocity)
     }
 
+    //START THE GAME
     start = () => {
         this.animation()
         console.log("Hello World")
@@ -232,13 +278,16 @@ class Game{
 
 const btn = document.getElementById("start")
 
+//GAME CLASS
 const Main = new Game(btn)
 
+//BUTTON TO START THE GAME
 btn.addEventListener("click", e => {
     Main.start()
     e.currentTarget.disabled = true
 }) 
 
+//GAME HOTKEYS
 window.addEventListener("keyup", e => {
     switch (e.key) {
         case "w":
